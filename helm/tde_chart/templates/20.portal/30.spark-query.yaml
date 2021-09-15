@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-query
+  namespace: {{ .Values.deploymentPrefix }}-portal
+spec:
+  replicas: {{ .Values.clusterSizing.sparkQueryInstances }}
+  selector:
+    matchLabels:
+      app: spark-query
+  template:
+    metadata:
+      labels:
+        app: spark-query
+    spec:
+      imagePullSecrets:
+        - name: registrycredentials
+      containers:
+        - name: spark-query
+          image: {{ .Values.imageCredentials.registry }}temenos/data/spark-k8s-2.4.4-3.1.0
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+          env:
+          command: ['/bin/bash', '-c', 'while sleep 3600; do :; done']
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2G
+            limits:
+              cpu: 2
+              memory: 4G
+          volumeMounts:
+            - mountPath: "/spark-common"
+              name: spark-common
+            - name: configmap-volume
+              mountPath: /opt/spark/conf/spark-defaults.conf
+              subPath: spark-defaults.conf
+      volumes:
+        - name: spark-common
+          persistentVolumeClaim:
+            claimName: spark-pvc-rwx
+        - name: configmap-volume
+          configMap:
+            name: spark-query-config

@@ -1,0 +1,16 @@
+{{ if eq .Values.clusterSizing.deployMssql true }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mssql-pv-claim
+  namespace: {{ .Values.deploymentPrefix }}-mssql
+  labels:
+    app: mssql
+spec:
+  storageClassName: {{ .Values.storage.defaultStorageClass }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+{{ end }}

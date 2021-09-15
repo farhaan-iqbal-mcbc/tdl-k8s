@@ -1,0 +1,10 @@
+kind: ConfigMap
+metadata:
+  name: portal-config
+  namespace: {{ .Values.deploymentPrefix }}-portal
+apiVersion: v1
+data:
+  spark-defaults.conf: |-
+    {{ tpl (.Files.Get "config-files/portal/spark-defaults.conf") . | nindent 4 | trim }}
+  metrics.properties: |-
+    {{ tpl (.Files.Get "config-files/portal/metrics.properties") . | nindent 4 | trim }}            

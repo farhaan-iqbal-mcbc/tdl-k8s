@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pv-claim
+  namespace: {{ .Values.deploymentPrefix }}-grafana
+  labels:
+    app: grafana
+spec:
+  storageClassName: {{ .Values.storage.defaultStorageClass }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

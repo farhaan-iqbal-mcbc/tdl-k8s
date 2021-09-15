@@ -1,0 +1,4 @@
+
+desSysConfig:
+  fld_tdl_kafka_url: "192.168.1.6"
+  

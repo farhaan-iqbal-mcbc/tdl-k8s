@@ -1,0 +1,26 @@
+{{ if eq .Values.clusterSizing.deployIgnite true }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+ name: ignite-activate
+ namespace: ignite
+spec:
+ ttlSecondsAfterFinished: 100
+ template:
+  spec:
+    volumes:
+      - name: configmap-volume
+        configMap:
+          defaultMode: 0700
+          name: ignite-config        
+    containers:
+    - name: ignite-activate
+      image: byrnedo/alpine-curl:0.1.8
+      command: ['sh', '-c', './bin/activate.sh']
+      volumeMounts:
+      - name: configmap-volume
+        mountPath: /bin/activate.sh
+        readOnly: true
+        subPath: activate.sh
+    restartPolicy: Never
+{{ end }}

@@ -1,0 +1,992 @@
+{
+    "enumDefs": [],
+    "structDefs": [],
+    "classificationDefs": [],
+    "entityDefs": [
+      {
+        "name": "api_definition",
+        "description": "Api definition for the semantic query layer",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "title",
+            "typeName": "string",
+            "isOptional": false,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": true
+          },
+          {
+            "name": "key",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": true
+          },
+          {
+            "name": "description",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "schemas",
+            "typeName": "array<string>",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "basePath",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "host",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "operation",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "summary",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "url",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "httpMethod",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "domain",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "apiVersion",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "apiType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "srcApplicationName",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "parentTableReference",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "selectionFields",
+            "typeName": "array<api_selection_field>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "responseFields",
+            "typeName": "array<api_response_field>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "joins",
+            "typeName": "array<api_join>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "sortingFields",
+            "typeName": "array<api_sorting_field>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "api_selection_field",
+        "description": "Filter condition definition for Api",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "selectionField",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": true
+          },
+          {
+            "name": "isOptional",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": true
+          },
+          {
+            "name": "operand",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "api_def",
+            "typeName": "api_definition",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "selectionFields"
+                }
+              }
+            ]
+          },
+          {
+            "name": "paramType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "paramValue",
+            "typeName": "array<string>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false
+          },
+          {
+            "name": "condition",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "selection_reference",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "api_response_field",
+        "description": "Response field definitions for the Api",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "responseField",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "dataType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "valueType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "rules",
+            "typeName": "array<api_rule>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "api_def",
+            "typeName": "api_definition",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "responseFields"
+                }
+              }
+            ]
+          },
+          {
+            "name": "response_reference",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "lookup_reference",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "join_reference",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "api_sorting_field",
+        "description": "Sorting field definition for Api",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "sortingField",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "sortingType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "api_def",
+            "typeName": "api_definition",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "sortingFields"
+                }
+              }
+            ],
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          },
+          {
+            "name": "sorting_reference",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "api_rule",
+        "description": "Defining the rules for api to be applied on runtime",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "ruleName",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "syntax",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "operationName",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "ruleOrder",
+            "typeName": "int",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "inputFieldsList",
+            "typeName": "array<api_reference>",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ],
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          }
+        ]
+      },
+      {
+        "name": "api_reference",
+        "description": "Table and column references",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "tableName",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldName",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "tableType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "dataType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "primaryKey",
+            "typeName": "array<string>",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "referenceName",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "parentTableReference",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "api_join",
+        "description": "Defining the join rules to be applied on runtime",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "leftJoinTable",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "joinType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "rightJoinTable",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "api_def",
+            "typeName": "api_definition",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "joins"
+                }
+              }
+            ]
+          },
+          {
+            "name": "joinConditions",
+            "typeName": "array<api_join_condition>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "api_join_condition",
+        "description": "Defining the rules for api join conditions",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "leftJoinColumn",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "rightJoinColumn",
+            "typeName": "api_reference",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "apiJoin",
+            "typeName": "api_join",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "joinConditions"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "relationshipDefs": [
+      {
+        "name": "api_definition_selection_fields",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__api_definition.selectionFields",
+        "endDef1": {
+          "type": "api_definition",
+          "name": "selectionFields",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_selection_field",
+          "name": "api_def",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_definition_response_fields",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__api_definition.responseFields",
+        "endDef1": {
+          "type": "api_definition",
+          "name": "responseFields",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_response_field",
+          "name": "api_def",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_definition_api_joins",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__api_definition.apiJoins",
+        "endDef1": {
+          "type": "api_definition",
+          "name": "joins",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_join",
+          "name": "api_def",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_join_api_joinConditions",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__api_join.apiJoinConditions",
+        "endDef1": {
+          "type": "api_join",
+          "name": "joinConditions",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_join_condition",
+          "name": "apiJoin",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_response_field_rules",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__api_response_field.rules",
+        "endDef1": {
+          "type": "api_response_field",
+          "name": "rules",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_rule",
+          "name": "response_field_def",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_definition_sorting_fields",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__api_definition.sortingFields",
+        "endDef1": {
+          "type": "api_definition",
+          "name": "sortingFields",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_sorting_field",
+          "name": "api_def",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_selection_field_reference",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__api_selection_field.selection_reference",
+        "endDef1": {
+          "type": "api_selection_field",
+          "name": "selection_reference",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_reference",
+          "name": "selection_field_ref",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_response_field_primary_reference",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__api_response_field.response_reference",
+        "endDef1": {
+          "type": "api_response_field",
+          "name": "response_reference",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_reference",
+          "name": "response_field_primary_ref",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_response_field_lookup_reference",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__api_response_field.lookup_reference",
+        "endDef1": {
+          "type": "api_response_field",
+          "name": "lookup_reference",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_reference",
+          "name": "response_field_lookup_ref",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_response_field_join_reference",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__api_response_field.join_reference",
+        "endDef1": {
+          "type": "api_response_field",
+          "name": "join_reference",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_reference",
+          "name": "response_field_join_ref",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "api_sorting_field_reference",
+        "serviceType": "api",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__api_sorting_field.sorting_reference",
+        "endDef1": {
+          "type": "api_response_field",
+          "name": "sorting_reference",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "api_reference",
+          "name": "sorting_field_ref",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      }
+    ]
+,
+  "tmsRequest": {
+    "moduleName": "sql",
+    "requestTime": "2020-09-21T07:44:57.211Z",
+    "requestType": "create",
+    "serviceType": "sql",
+    "userId": "admin"
+  }
+}

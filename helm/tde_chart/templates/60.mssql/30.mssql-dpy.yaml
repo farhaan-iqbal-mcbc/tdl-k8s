@@ -1,0 +1,56 @@
+{{ if eq .Values.clusterSizing.deployMssql true }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql
+  namespace: {{ .Values.deploymentPrefix }}-mssql
+spec:
+  selector:
+    matchLabels:
+      app: mssql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      serviceAccountName: mssql
+      containers:
+      - name: mssql
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+        - name: SA_PASSWORD
+          value: "{{ .Values.mssql.saPassword }}"
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_PID
+          value: "Developer"
+        ports:
+        - containerPort: 1433 # SQL
+        command: ['/bin/bash', '-c',
+        '/usr/src/app/readiness_loop.sh & /opt/mssql/bin/sqlservr;']
+        resources:
+          requests:
+            cpu: 500m
+            memory: 500Mi
+          limits:
+            cpu: 2
+            memory: 2G
+        volumeMounts:
+        - name: mssql-persistence
+          mountPath: "/var/opt/mssql"
+        - name: configmap-volume
+          mountPath: /usr/src/app/readiness_loop.sh
+          subPath: readiness_loop.sh
+        - name: configmap-volume
+          mountPath: /usr/src/app/mssql_bootstrap.sql
+          subPath: mssql_bootstrap.sql
+      volumes:
+      - name: mssql-persistence
+        persistentVolumeClaim:
+          claimName: mssql-pv-claim
+      - name: configmap-volume
+        configMap:
+          name: mssql-config
+          defaultMode: 0777
+{{ end }}

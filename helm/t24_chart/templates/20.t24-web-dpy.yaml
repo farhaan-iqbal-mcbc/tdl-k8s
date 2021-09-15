@@ -1,0 +1,50 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t24-browserweb
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  selector:
+    matchLabels:
+      app: t24-browserweb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: t24-browserweb
+    spec:
+      imagePullSecrets:
+        - name: registrycredentials
+      containers:
+        - name: t24-browserweb
+          image: {{ .Values.imageCredentials.registry }}temenos/data/t24-browserweb
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: t24-app-config
+          env:
+            - name: JMS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: t24-secrets
+                  key: AMQ_USER
+            - name: JMS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: t24-secrets
+                  key: AMQ_PASSWORD
+            - name: JAVA_OPTIONS_SIZING
+              value: "-Xms2G -Xmx2G -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=512m"
+            - name: WWW_PORT
+              value: "8080"
+          resources:
+            requests:
+              cpu: 200m
+              memory: 3G
+            limits:
+              cpu: 1
+              memory: 3G
+          ports:
+            - containerPort: 8080
+              name: web

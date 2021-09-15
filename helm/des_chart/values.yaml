@@ -1,0 +1,43 @@
+imageCredentials:
+  registry: "tdecloud.azurecr.io/"
+  username: 974f6439-644e-4b6f-a924-7bb7dd8e7bad
+  password: fe3acfc3-59b7-417f-9776-76b473093df7
+
+imagePullPolicy: Always
+
+des:
+  configurationId: "yourConfigId"
+  configurationIlpId: "yourConfigId"
+  dbSid: "yourDbSid"
+  eventHubSharedAccessKey: "yourxxx"
+  eventHubResourceGroupHost: "yourxxx"
+  eventHubResourceGroupPort: "yourxxx"
+  eventHubSharedAccessIlpKey: "yourxxx"
+  eventHubResourceGroupIlpHost: "yourxxx"
+  eventHubResourceGroupIlpPort: "yourxxx"
+  eventHubSharedAccessKeyForSchema: "yourxxx"
+  eventHubResourceGroupHostForSchema: "yourxxx"
+  eventHubResourceGroupPortForSchema: "yourxxx"
+  # keystore overrides
+  temenosTafjJdbcUrl: "please_override"
+  temenosTafjJdbcPwd: "please_override"
+  temenosTafjJdbcUser: "please_override"
+  temenosTafjJdbcDriver: "please_override"
+
+  temenosTafjJdbcErrorCacheUrl: "please_override"
+  temenosTafjJdbcErrorCachePwd: "please_override"
+  temenosTafjJdbcErrorCacheUser: "please_override"
+  temenosTafjJdbcErrorCacheDriver: "please_override"
+
+  temenosTafjJdbcEventCacheUrl: "please_override"
+  temenosTafjJdbcEventCachePwd: "please_override"
+  temenosTafjJdbcEventCacheUser: "please_override"
+  temenosTafjJdbcEventCacheDriver: "please_override"
+
+  temenosTafjJdbcXsdEventCacheUrl: "please_override"
+  temenosTafjJdbcXsdEventCachePwd: "please_override"
+  temenosTafjJdbcXsdEventCacheUser: "please_override"
+  temenosTafjJdbcXsdEventCacheDriver: "please_override"
+
+  keystore:
+    password: 3jyh?=%_baT

@@ -1,0 +1,12 @@
+{{ if eq .Values.clusterSizing.deployMssql true }}
+kind: ConfigMap
+metadata:
+  name: mssql-config
+  namespace: {{ .Values.deploymentPrefix }}-mssql
+apiVersion: v1
+data:
+  readiness_loop.sh: |-
+    {{ tpl (.Files.Get "config-files/mssql/readiness_loop.sh") . | nindent 4 | trim }}
+  mssql_bootstrap.sql: |-
+    {{ tpl (.Files.Get "config-files/mssql/mssql_bootstrap.sql") . | nindent 4 | trim }}
+{{ end }}

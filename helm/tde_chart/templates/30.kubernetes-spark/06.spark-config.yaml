@@ -1,0 +1,12 @@
+kind: ConfigMap
+metadata:
+  name: spark-config
+  namespace: {{ .Values.deploymentPrefix }}-portal
+apiVersion: v1
+data:
+  spark-defaults-template.conf: |-
+    {{ tpl (.Files.Get "config-files/spark/spark-defaults-template.conf") . | nindent 4 | trim }}
+
+  process-spark-defaults-template.conf.sh: |-
+    {{ tpl (.Files.Get "config-files/spark/process-spark-defaults-template.conf.sh") . | nindent 4 | trim }}
+

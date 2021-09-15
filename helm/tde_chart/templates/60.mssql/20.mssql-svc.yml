@@ -1,0 +1,32 @@
+{{ if eq .Values.clusterSizing.deployMssql true }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: mssql
+  namespace: {{ .Values.deploymentPrefix }}-mssql
+spec:
+  selector:
+    app: mssql
+  ports:
+    - name: mssql
+      port: 1433
+      targetPort: 1433
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: mssql-external
+  namespace: {{ .Values.deploymentPrefix }}-mssql
+spec:
+  selector:
+    app: mssql
+  ports:
+    - name: mssql
+      protocol: TCP
+      targetPort: 1433
+      port: {{ .Values.network.mssqlOutsidePort }}
+      nodePort: {{ .Values.network.mssqlOutsidePort }}
+  type: NodePort
+{{ end }}

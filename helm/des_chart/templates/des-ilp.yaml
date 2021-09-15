@@ -1,0 +1,832 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: des-event-cleanup-ilp
+  namespace: des
+spec:
+  selector:
+    matchLabels:
+      app: des-event-cleanup-ilp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: des-event-cleanup-ilp
+        des: owned
+    spec:
+      nodeSelector:
+        nodetype: des
+      containers:
+        - name: des-event-cleanup-ilp
+          image: tdecloud.azurecr.io/temenos/des-event-cleanup:{{ .Values.releaseLabel | default "latest" }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TZ
+            - name: IGNITE_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ignite-keystore-password
+                  key: password
+            - name: TEMN_DES_DATA_REPO_CONFIGURATION_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_DATA_REPO_CONFIGURATION_ILP_ID
+            - name: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+            # JDBC
+            - name: TEMN_TAFJ_JDBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL
+            - name: TEMN_TAFJ_JDBC_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME
+            - name: TEMN_TAFJ_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER
+            # JDBC Event Error Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventerrorcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+            # JDBC Event Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+            # JDBC Event XSD
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventxsdcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+
+            - name: EVENT_HUB_SHARED_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-ilp-shared-key
+                  key: sharedkey
+            - name: EVENT_HUB_RESOURCE_GROUP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_HOST
+            - name: EVENT_HUB_RESOURCE_GROUP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_PORT
+          resources:
+            requests:
+              cpu: 200m
+              memory: 500Mi
+            limits:
+              cpu: 500m
+              memory: 1G
+      imagePullSecrets:
+        - name: registry-credentials
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: des-event-pull-adapter-ilp
+  namespace: des
+spec:
+  selector:
+    matchLabels:
+      app: des-event-pull-adapter-ilp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: des-event-pull-adapter-ilp
+        des: owned
+    spec:
+      nodeSelector:
+        nodetype: des
+      containers:
+        - name: des-event-pull-adapter-ilp
+          image: tdecloud.azurecr.io/temenos/des-event-pull-adapter:{{ .Values.releaseLabel | default "latest" }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: IGNITE_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ignite-keystore-password
+                  key: password
+            - name: TEMN_DES_DATA_REPO_CONFIGURATION_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_DATA_REPO_CONFIGURATION_ILP_ID
+#            - name: INSTANCEID
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: des-config
+#                  key: INSTANCEID
+            - name: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+            # JDBC
+            - name: TEMN_TAFJ_JDBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL
+            - name: TEMN_TAFJ_JDBC_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME
+            - name: TEMN_TAFJ_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER
+            # JDBC Event Error Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventerrorcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+            # JDBC Event Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+            # JDBC Event XSD
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventxsdcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+
+            - name: EVENT_HUB_SHARED_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-ilp-shared-key
+                  key: sharedkey
+            - name: EVENT_HUB_RESOURCE_GROUP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_HOST
+            - name: EVENT_HUB_RESOURCE_GROUP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_PORT
+            - name: IGNITE_OPTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: IGNITE_OPTIONS
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 4G
+      imagePullSecrets:
+        - name: registry-credentials
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: des-event-pull-adapter-recovery-ilp
+  namespace: des
+spec:
+  selector:
+    matchLabels:
+      app: des-event-pull-adapter-recovery-ilp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: des-event-pull-adapter-recovery-ilp
+        des: owned
+    spec:
+      nodeSelector:
+        nodetype: des
+      containers:
+        - name: des-event-pull-adapter-recovery-ilp
+          image: tdecloud.azurecr.io/temenos/des-event-pull-adapter:{{ .Values.releaseLabel | default "latest" }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: IGNITE_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ignite-keystore-password
+                  key: password
+            - name: TEMN_DES_DATA_REPO_CONFIGURATION_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_DATA_REPO_CONFIGURATION_ILP_ID
+            - name: INSTANCEID
+              value: instance-recovery-ilp
+            - name: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+            # JDBC
+            - name: TEMN_TAFJ_JDBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL
+            - name: TEMN_TAFJ_JDBC_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME
+            - name: TEMN_TAFJ_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER
+            # JDBC Event Error Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventerrorcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+            # JDBC Event Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+            # JDBC Event XSD
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventxsdcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+
+            - name: EVENT_HUB_SHARED_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-ilp-shared-key
+                  key: sharedkey
+            - name: EVENT_HUB_RESOURCE_GROUP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_HOST
+            - name: EVENT_HUB_RESOURCE_GROUP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_PORT
+            - name: IGNITE_OPTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: IGNITE_OPTIONS
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500Mi
+            limits:
+              cpu: 1000m
+              memory: 1G
+      imagePullSecrets:
+        - name: registry-credentials
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: des-event-router-ilp
+  namespace: des
+spec:
+  selector:
+    matchLabels:
+      app: des-event-router-ilp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: des-event-router-ilp
+        des: owned
+    spec:
+      nodeSelector:
+        nodetype: des
+      containers:
+        - name: des-event-router-ilp
+          image: tdecloud.azurecr.io/temenos/des-event-router:{{ .Values.releaseLabel | default "latest" }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: IGNITE_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ignite-keystore-password
+                  key: password
+            - name: TEMN_DES_DATA_REPO_CONFIGURATION_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_DATA_REPO_CONFIGURATION_ILP_ID
+#            - name: INSTANCEID
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: des-config
+#                  key: INSTANCEID
+            - name: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+            # JDBC
+            - name: TEMN_TAFJ_JDBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL
+            - name: TEMN_TAFJ_JDBC_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME
+            - name: TEMN_TAFJ_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER
+            # JDBC Event Error Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventerrorcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+            # JDBC Event Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+            # JDBC Event XSD
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventxsdcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+
+            - name: EVENT_HUB_SHARED_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-ilp-shared-key
+                  key: sharedkey
+            - name: EVENT_HUB_RESOURCE_GROUP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_HOST
+            - name: EVENT_HUB_RESOURCE_GROUP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_PORT
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500Mi
+            limits:
+              cpu: 1000m
+              memory: 2G
+      imagePullSecrets:
+        - name: registry-credentials
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: des
+  name: des-event-processor-ilp
+spec:
+  selector:
+    matchLabels:
+      app: des-event-processor-ilp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: des-event-processor-ilp
+        des: owned
+    spec:
+      nodeSelector:
+        nodetype: des
+      containers:
+        - name: des-event-processor-ilp
+          image: tdecloud.azurecr.io/temenos/des-event-processor:{{ .Values.releaseLabel | default "latest" }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: IGNITE_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ignite-keystore-password
+                  key: password
+            - name: EVENT_PROCESSOR_T24_DB_SID
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_PROCESSOR_T24_DB_SID
+            - name: TEMN_DES_DATA_REPO_CONFIGURATION_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_DATA_REPO_CONFIGURATION_ILP_ID
+#            - name: INSTANCEID
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: des-config
+#                  key: INSTANCEID
+            - name: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL
+            # JDBC
+            - name: TEMN_TAFJ_JDBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL
+            - name: TEMN_TAFJ_JDBC_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME
+            - name: TEMN_TAFJ_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER
+            # JDBC Event Error Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventerrorcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE
+            # JDBC Event Cache
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE
+            # JDBC Event XSD
+            - name: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE
+            - name: TEMN_TAFJ_JDBC_PASSWORD_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                secretKeyRef:
+                  name: jdbc-eventxsdcache-password
+                  key: password
+            - name: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE
+
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS
+            - name: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD
+
+            - name: EVENT_HUB_SHARED_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-ilp-shared-key
+                  key: sharedkey
+            - name: EVENT_HUB_RESOURCE_GROUP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_HOST
+            - name: EVENT_HUB_RESOURCE_GROUP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: des-config
+                  key: EVENT_HUB_RESOURCE_GROUP_ILP_PORT
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 4G
+      imagePullSecrets:
+        - name: registry-credentials
+

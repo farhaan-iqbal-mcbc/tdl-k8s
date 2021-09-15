@@ -1,0 +1,41 @@
+{
+  "enumDefs": [],
+  "structDefs": [],
+  "classificationDefs": [],
+  "entityDefs": [
+    {
+      "name": "hdfs_column",
+      "description": "a column in an hdfs",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": [
+        {
+          "name": "data_type",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "comment",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false
+        },
+        {
+          "name": "hdfs_file_path",
+          "typeName": "hdfs_path",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{{ if eq .Values.clusterSizing.deployMssql true }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.deploymentPrefix }}-mssql
+{{ end }}

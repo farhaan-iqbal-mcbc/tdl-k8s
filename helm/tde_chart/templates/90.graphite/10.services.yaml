@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: graphite-outside
+ namespace: {{ .Values.deploymentPrefix }}-graphite
+ labels:
+   app: graphite
+spec:
+  selector:
+     app: graphite
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    name: graphite
+  - port: 2003
+    protocol: TCP
+    targetPort: 2003
+    name: carbon
+  type: NodePort
+  
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: graphite
+  namespace: {{ .Values.deploymentPrefix }}-graphite
+spec:
+  selector:
+    app: graphite
+  ports:
+  - name: carbonport
+    protocol: TCP
+    port: 2004
+  - name: graphite-inside
+    protocol: TCP
+    port: 80
+  - name: carbon-inside    
+    protocol: TCP 
+    port: 2003

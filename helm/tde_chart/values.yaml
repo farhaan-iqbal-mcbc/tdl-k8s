@@ -1,0 +1,245 @@
+# Default values for tde_chart.
+# Replace the masternode and registry values here
+# but supply the username and password from the command line:
+# helm install --name tde tde_chart-0.1.0.tgz /
+# --set imageCredentials.username=abc,imageCredentials.password=xyz
+
+# used by kafka ui, to enable external access through proxy.
+masternode: kube20
+# used for service domain names
+kubernetesDNSDomain: cluster.local
+
+# private docker registry where container images will be pulled from.
+imagePullPolicy: IfNotPresent
+imageCredentials:
+  registry:
+  username:
+  password:
+  
+image:
+  repository: temenos/data/livy-0.8
+  tag: latest
+  pullPolicy: IfNotPresent
+
+rbac:
+  create: false
+
+global: {}
+
+imagePullSecrets: []
+# - name: image-pull-secret-name
+
+service:
+  type: NodePort
+  port: 30553
+ 
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    #
+    # External auth with OAuth2: https://kubernetes.github.io/ingress-nginx/examples/auth/oauth-external-auth/#external-oauth-authentication
+    # nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    # nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    #
+    # Basic auth
+    # nginx.ingress.kubernetes.io/auth-type: basic
+    # nginx.ingress.kubernetes.io/auth-secret: secret-namespace/auth-secret
+    # nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+    #
+    # Rewrite target URI without basePath part: https://kubernetes.github.io/ingress-nginx/examples/rewrite/#rewrite
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1
+  path: /
+  # path: /livy/?(.*) # Capture target URI part to remove basePath on `rewrite-target` above
+  hosts:
+  - livy.local # Set to endpoint hostname to accept requests to
+  tls: [] # Configure tls, Certmanager will do the work with Certs for you if properly configured
+  # - secretName: livy-tls
+  #   hosts:
+  #   - livy.local
+  
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  # nodeAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     nodeSelectorTerms:
+  #     - matchExpressions:
+  #       - key: autoscale-retain
+  #         operator: In
+  #         values:
+  #         - "true"
+  
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: 
+
+sparkServiceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: 
+
+env:
+  LIVY_LIVY_UI_BASE1PATH: {value: ""} # eg.: `/livy`
+  LIVY_LIVY_SERVER_SESSION_STATE0RETAIN_SEC: {value: "12h"}
+  LIVY_LIVY_SERVER_SESSION_MAX0CREATION: {value: "1000"}
+  LIVY_LIVY_SPARK_MASTER: {value : "k8s://https://kubernetes.default.svc:443"}
+  #LIVY_LIVY_SERVER_RECOVERY_MODE: {value: "recovery"}
+  LIVY_LIVY_SERVER_RECOVERY_STATE0STORE: {value: "filesystem"}
+  LIVY_LIVY_SERVER_RECOVERY_STATE0STORE_URL: {value: "file:///tmp/livy/store/state"}
+  LIVY_SPARK_KUBERNETES_CONTAINER_IMAGE: {value: "temenos/data/livy-spark-0.8:latest"}
+  LIVY_SPARK_KUBERNETES_CONTAINER_IMAGE_PULLPOLICY: {value: "IfNotPresent"}
+  LIVY_SPARK_EVENT1LOG_ENABLED: {value: "false"}
+  LIVY_SPARK_EVENT1LOG_DIR: {value: "file:///tmp/history-server"}
+  LIVY_SPARK_KUBERNETES_DRIVER_ANNOTATION_CREATED0BY: {value: "livy"}
+  LIVY_SPARK_KUBERNETES_EXECUTOR_ANNOTATION_CREATED0BY: {value: "livy"}
+  LIVY_SPARK_KUBERNETES_DRIVER_LABEL_NAME: {value: "driver"}
+  LIVY_SPARK_KUBERNETES_EXECUTOR_LABEL_NAME: {value: "executor"}
+  LIVY_SPARK_KUBERNETES_EXECUTOR_REQUEST_CORES: {value: "1"}
+  LIVY_SPARK_KUBERNETES_DRIVER_REQUEST_CORES: {value: "1"}
+  LIVY_SPARK_KUBERNETES_EXECUTOR_MEMORY: {value: "512m"}
+  LIVY_SPARK_KUBERNETES_SUBMISSION_WAIT1APPCOMPLETION: {value: "true"}
+  LIVY_SPARK_EXECUTOR1ENV_1K1A1F1K1A21H1O1S1T: {value: "192.168.1.5"}
+  LIVY_SPARK_KUBERNETES_DRIVER1ENV_1K1A1F1K1A21H1O1S1T : {value: "192.168.1.5"}
+  
+envFrom: []
+# - configMapRef:
+#     name: env-configmap
+# - secretRef:
+#     name: env-secrets
+
+livyConf: {}
+#  fromConfigMap: "livy-config"
+#  fromSecret: "livy-conf-secret"
+
+sparkDefaultsConf: {}
+#  fromConfigMap: "livy-config"
+# fromSecret: "spark-defaults-conf-secret"
+
+livyClientConf: {}
+#  fromConfigMap: "livy-config"
+# fromSecret: "livy-client-conf-secret"
+
+persistence:
+  enabled: false
+  # subPath: ""
+
+  ## If defined, will use the existing PVC and will not create a new one.
+  # existingClaim: ""
+
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 20Gi
+  annotations: {}
+
+# all namespaces & storage classes will be prefixed with this token
+deploymentPrefix: tde
+
+# logging level configuration
+loggingLevel:
+  spark: INFO,console,file
+
+# control which additional services will be deployed
+ancillaryServices:
+  deployHue: false
+  dashboard:
+    deploy: true
+  sparkQuery: 1
+
+# Control the timezone from here
+misc:
+  containerTimezone:
+  
+# network
+network:
+  portal:
+    portalOutsideServiceType: NodePort
+    portalOutsidePort: 30443
+  mysqlOutsidePort: 30330
+  mysqlHost: mysql-inside.tde-mysql
+  mysqlHostPort: 3306
+  sparkProxyExternalNodePort: 31100
+  atlasOutsidePort: 31021
+  igniteOutsidePort: 31022
+  mssqlOutsidePort: 31022
+  grafanaOutsidePort: 30300
+
+# metadata db
+metadataDb:
+  user: "root"
+  password:  "123456"
+
+# mssql
+mssql:
+  saPassword: Temenos123
+
+# atlas
+atlas:
+  kafkaConsumerGroup: tde-atlas-k8s
+  kafkaBootstrapServer: kafka.des:29092
+  kafkaZk: zookeeper.des:32181
+
+# storage
+storage:
+  provider: docker.io/hostpath
+  defaultSharedStorageClass: hostpath
+  defaultStorageClass: hostpath
+  sparkShareSize: 2Gi
+  azure:
+    storageLocation: "somelocation"
+  rook:
+    replicas: 0
+
+
+# cluster sizing
+clusterSizing:
+  atlas: 1
+  mysqlMetadata: 1
+  deployIgnite: true
+  deployMssql: false
+  igniteReplicas: 2
+  useSelectors: false
+  sparkQueryInstances: 0
+
+# spark
+spark:
+  master: "livy://http://tde-livy:30553"
+  kubernetesmaster:  "k8s://https://kubernetes.default.svc:443"
+  checkpointLocation: "/usr/lib/htrunk/spark-checkpoints"
+  datalakePath: "/usr/lib/htrunk/datalake"
+  executorRequestCores: "0.5"
+  driverRequestCores: "0.5"
+  executorMemory: 1024m
+  waitAppCompletion: true
+
+# ignite
+ignite:
+  odsSchema: "ODS"
+  sdsSchema: "SDS"
+

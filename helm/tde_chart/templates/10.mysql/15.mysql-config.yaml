@@ -1,0 +1,6 @@
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: {{ .Values.deploymentPrefix }}-mysql
+apiVersion: v1
+

@@ -1,0 +1,32 @@
+{{ if eq .Values.clusterSizing.deployIgnite true }}
+kind: ConfigMap
+metadata:
+  name: ignite-config
+  namespace: ignite
+apiVersion: v1
+data:
+  ignite-config-kube-persistence.xml: |-
+    {{ tpl (.Files.Get "config-files/ignite/ignite-config-kube-persistence.xml") . | nindent 4 | trim }}
+  
+  activate.sh: |-
+    #!/bin/sh
+    until [ "$(curl --silent "http://ignite-0.ignite:8080/ignite?cmd=version&ignite.login=ignite&ignite.password=ignite" | grep '"successStatus":0')" ];
+    do
+      echo $(date) --- Ignite is unreachable, please wait...
+      sleep 2
+    done
+
+    echo $(date) --- Activating...
+    curl --silent "http://ignite-0.ignite:8080/ignite?cmd=activate&ignite.login=ignite&ignite.password=ignite"
+    sleep 5
+    echo
+    until [ "$(curl --silent -H 'Cache-Control: no-cache' 'http://ignite-0.ignite:8080/ignite?cmd=currentstate&ignite.login=ignite&ignite.password=ignite' | grep '"response":true')" ];
+    do
+      curl --silent "http://ignite-0.ignite:8080/ignite?cmd=currentstate&ignite.login=ignite&ignite.password=ignite"
+      echo $(date) --- Ignite is activating, please wait...
+      curl --silent "http://ignite-0.ignite:8080/ignite?cmd=activate&ignite.login=ignite&ignite.password=ignite"
+      sleep 5
+    done
+    echo $(date) --- currentstate:
+    curl --silent "http://ignite-0.ignite:8080/ignite?cmd=currentstate&ignite.login=ignite&ignite.password=ignite"
+{{ end }}

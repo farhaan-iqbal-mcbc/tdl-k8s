@@ -1,0 +1,32 @@
+
+imageCredentials:
+  registry:
+  username:
+  password:
+imagePullPolicy: IfNotPresent
+
+# Add dictionaries under "Output" to define sinks for fluentbit.
+# Example:
+# outputs:
+#   file:
+#     Name: "file"
+#     Path: "/containerlogs"
+#     Match: "*"
+#     Format: "plain"
+
+
+# Use the .volumes and .volumeMounts dictionaries to define
+# volumes and mounts for the fluentbit daemon.
+# The dictionary key will be used as the "name" of the volume/volumeMount
+# and any properties below will be transposed directly in the
+# daemonset yaml file.
+# Example:
+# volumes:
+#   containerlogs:
+#     hostPath:
+#       path: /containerlogs
+# volumeMounts:
+#   containerlogs:
+#     mountPath: /containerlogs
+#
+

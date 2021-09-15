@@ -1,0 +1,103 @@
+# Default values for tde_chart.
+# Replace the masternode and registry values here
+# but supply the username and password from the command line:
+# helm install --name tde tde_chart-0.1.0.tgz /
+# --set imageCredentials.username=abc,imageCredentials.password=xyz
+
+
+# used by kafka ui, to enable external access through proxy.
+masternode: kube20
+# used for service domain names
+kubernetesDNSDomain: cluster.local
+
+# private docker registry where container images will be pulled from.
+imagePullPolicy: Always
+imageCredentials:
+  registry: "tdecloud.azurecr.io/"
+  username: 974f6439-644e-4b6f-a924-7bb7dd8e7bad
+  password: fe3acfc3-59b7-417f-9776-76b473093df7
+
+# all namespaces & storage classes will be prefixed with this token
+deploymentPrefix: tde
+
+# logging level configuration
+loggingLevel:
+  spark: INFO,console,file
+
+# control which additional services will be deployed
+ancillaryServices:
+  deployHue: false
+  dashboard:
+    deploy: false
+
+# Control the timezone from here
+misc:
+  containerTimezone:
+
+# network
+network:
+  portal:
+    portalOutsideServiceType: LoadBalancer
+    portalOutsidePort: 443
+  mysqlOutsidePort: 30330
+  mysqlHost: tdl-mysql-metadata-db.mysql.database.azure.com
+  mysqlHostPort: 3306
+  sparkProxyExternalNodePort: 31100
+  atlasOutsidePort: 31021
+  igniteOutsidePort: 31022
+
+# metadata db
+metadataDb:
+  user: "tdl-admin@tdl-mysql-metadata-db.mysql.database.azure.com"
+  password:  ""
+
+
+# atlas
+atlas:
+  kafkaConsumerGroup: tde-atlas-k8s
+  kafkaBootstrapServer: 10.20.0.136:6668
+  kafkaZk: 10.20.0.136:2181
+
+# storage
+storage:
+   provider: azure
+   defaultStorageClass: azure-disk-premium
+   defaultSharedStorageClass: azure-file-premium
+   sparkShareSize: 80Gi
+   azure:
+       storageLocation: westeurope
+
+
+# cluster sizing
+clusterSizing:
+  atlas: 1
+  mysqlMetadata: 0
+  deployIgnite: false
+  igniteReplicas: 0
+
+# spark
+spark:
+  master: "k8s://https://kubernetes.default.svc:443"
+  checkpointLocation: "/usr/lib/htrunk/spark-checkpoints"
+  datalakePath: "/usr/lib/htrunk/datalake"
+  executorRequestCores: "0.5"
+
+# ignite
+ignite:
+  odsSchema: "ODS"
+  sdsSchema: "SDS"
+
+# DES
+des:
+  cnx:
+    appUrl: "http://10.94.15.214:18990"
+    appSsl: Yes
+    appBasicUser: user
+    appBasicUserPass: pass
+    irisAppUrl: "http://10.94.15.214:9089/irf-provider-container/api/v1.0.0/"
+    tdlSchemaRegistry: "http://10.94.15.214:8081"
+    tdlKafkaBootstrapServer: "10.94.15.214"
+    tdlKafkaBootstrapServerPort: "29092"
+
+
+

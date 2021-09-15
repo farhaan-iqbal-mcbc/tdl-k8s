@@ -1,0 +1,16 @@
+version: "2"
+
+services:
+  statsd:
+   build:
+    context: .
+    args:
+      python_binary: python3
+   volumes:
+    - ./conf/opt/graphite/conf:/opt/graphite/conf
+   ports:
+    - "80:80"
+    - "2003-2004:2003-2004"
+    - "2023-2024:2023-2024"
+    - "8125:8125/udp"
+    - "8126:8126"

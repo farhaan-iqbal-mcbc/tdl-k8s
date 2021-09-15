@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: apache-atlas
+  namespace: {{ .Values.deploymentPrefix }}-atlas
+spec:
+  replicas: {{ .Values.clusterSizing.atlas }}
+  serviceName: atlas-headless  
+  selector:
+    matchLabels:
+      app: apache-atlas
+  template:
+    metadata:
+      labels:
+        app: apache-atlas
+    spec:
+      imagePullSecrets:
+        - name: registrycredentials
+      {{ if .Values.clusterSizing.useSelectors }}
+      nodeSelector:
+        nodetype: application
+      {{ end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            defaultMode: 0777
+            name: atlas-config
+        - name: atlas-persistent-storage
+          persistentVolumeClaim:
+            claimName: atlas-pv-claim
+        - name: atlas-solr-persistent-storage
+          persistentVolumeClaim:
+            claimName: atlas-pv-solr-claim
+        - name: atlas-zk-persistent-storage
+          persistentVolumeClaim:
+            claimName: atlas-pv-zk-claim
+      containers:
+      - name: apache-atlas
+        image: {{ .Values.imageCredentials.registry }}temenos/data/atlas-2.2
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - name: webapp
+          containerPort: 21000
+        env:
+          - name: ATLAS_SERVER_HEAP
+            value: "-Xmx1024m -XX:MetaspaceSize=100M -XX:MaxMetaspaceSize=512m"
+          - name: KAFKA_HOOK_CONSUMER_GROUP
+            value: {{ .Values.atlas.kafkaConsumerGroup }}   
+          - name: KAFKA_HOOK_BOOTSTRAP_SERVER
+            value: {{ .Values.atlas.kafkaBootstrapServer }}  
+          - name: KAFKA_HOOK_ZK
+            value: {{ .Values.atlas.kafkaZk }}
+          - name: SOLR_HOME 
+            value: /data/solr
+        volumeMounts:
+          - name: config-volume
+            mountPath: /opt/atlas/conf/atlas-application.properties
+            subPath: atlas-application.properties    
+            readOnly: false
+          - name: config-volume
+            mountPath: /opt/atlas/bin/atlas_config.py
+            subPath: atlas_config.py   
+            readOnly: false
+          - name: config-volume
+            mountPath: /opt/atlas/conf/cassandra.yml
+            subPath: cassandra.yml   
+            readOnly: false
+          - name: config-volume
+            mountPath: /opt/atlas/conf/zookeeper/zoo.cfg.template
+            subPath: zoo.cfg.template   
+            readOnly: false
+          - name: config-volume
+            mountPath: /data/solr/zoo.cfg
+            subPath: zoo.cfg 
+            readOnly: false
+          - name: config-volume
+            mountPath: /data/solr/solr.xml
+            subPath: solr.xml 
+            readOnly: false
+          - name: config-volume
+            mountPath: /data/solr/README.txt
+            subPath: README.txt 
+            readOnly: false
+          - name: atlas-persistent-storage
+            mountPath: /data/cassandra
+            readOnly: false
+          - name: atlas-solr-persistent-storage
+            mountPath: /data/solr
+            readOnly: false            
+          - name: atlas-zk-persistent-storage
+            mountPath: /data/zookeeper
+            readOnly: false                        

@@ -1,0 +1,8 @@
+kind: ConfigMap
+metadata:
+  name: spark-query-config
+  namespace: {{ .Values.deploymentPrefix }}-portal
+apiVersion: v1
+data:
+  spark-defaults.conf: |-
+    {{ tpl (.Files.Get "config-files/spark-query/spark-defaults.conf") . | nindent 4 | trim }}

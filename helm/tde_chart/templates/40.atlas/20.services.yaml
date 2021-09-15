@@ -1,0 +1,34 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: atlas-outside
+  namespace: {{ .Values.deploymentPrefix }}-atlas
+  {{ if eq .Values.network.portal.portalOutsideServiceType "LoadBalancer" }}
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  {{ end }}  
+spec:
+  selector:
+    app: apache-atlas
+  ports:
+  - protocol: TCP
+    targetPort: 21000
+    port: {{ .Values.network.atlasOutsidePort }}
+    {{ if eq .Values.network.portal.portalOutsideServiceType "NodePort" }}    
+    nodePort: {{ .Values.network.atlasOutsidePort }}
+    {{ end }}
+  type: {{ .Values.network.portal.portalOutsideServiceType }}
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: apache-atlas
+  namespace: {{ .Values.deploymentPrefix }}-atlas
+spec:
+  selector:
+    app: apache-atlas
+  ports:
+  - protocol: TCP
+    port: 21000

@@ -1,0 +1,63 @@
+{
+  "enumDefs": [],
+  "classificationDefs": [],
+  "entityDefs": [
+    {
+      "name": "hdfs_path",
+      "superTypes": [
+        "fs_path"
+      ],
+      "typeVersion": "1.1",
+      "attributeDefs": [
+        {
+          "name": "clusterName",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isIndexable": true,
+          "isOptional": true,
+          "includeInNotification": true,
+          "isUnique": false
+        },
+        {
+          "name": "numberOfReplicas",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isIndexable": true,
+          "isOptional": true,
+          "isUnique": false
+        },
+        {
+          "name": "extendedAttributes",
+          "typeName": "map<string,string>",
+          "cardinality": "SINGLE",
+          "isIndexable": false,
+          "isOptional": true,
+          "isUnique": false
+        },
+        {
+          "name": "nameServiceId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isIndexable": false,
+          "isOptional": true,
+          "isUnique": false,
+          "includeInNotification": true
+        },
+        {
+          "name": "hdfs_Columns_names",
+          "typeName": "array<hdfs_column>",
+          "cardinality": "SET",
+          "isIndexable": false,
+          "isOptional": true,
+          "isUnique": false,
+          "includeInNotification": true,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

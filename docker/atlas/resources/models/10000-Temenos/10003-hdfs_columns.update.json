@@ -1,0 +1,71 @@
+{
+  "enumDefs": [],
+  "structDefs": [],
+  "classificationDefs": [],
+  "entityDefs": [
+    {
+      "name": "hdfs_column",
+      "description": "a column in an hdfs",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": [
+        {
+          "name": "data_type",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "comment",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false
+        },
+        {
+          "name": "hdfs_file_path",
+          "typeName": "hdfs_path",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "hdfs_Columns_names"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "relationshipDefs": [
+    {
+      "name": "hdfs_path_columns",
+      "typeVersion": "1.0",
+      "relationshipCategory": "AGGREGATION",
+      "endDef1": {
+        "type": "hdfs_path",
+        "name": "hdfs_columns",
+        "isContainer": true,
+        "cardinality": "SET",
+        "isLegacyAttribute": true
+      },
+      "endDef2": {
+        "type": "hdfs_column",
+        "name": "hdfs_file_path",
+        "isContainer": false,
+        "cardinality": "SINGLE",
+        "isLegacyAttribute": true
+      },
+      "propagateTags": "NONE"
+    }
+  ]
+}

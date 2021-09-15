@@ -1,0 +1,17 @@
+{{ if eq .Values.storage.defaultStorageClass "localhost-linux-t24" }}
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: vol-t24-amq
+  labels:
+    type: local
+spec:
+  storageClassName: localhost-linux-t24
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/k8s/vol-t24-amq"
+
+{{ end }}

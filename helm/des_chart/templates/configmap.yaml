@@ -1,0 +1,43 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: des-config
+  namespace: des
+data:
+  TZ: UTC
+  TEMN_DES_DATA_REPO_CONFIGURATION_ID: {{ .Values.des.configurationId }}
+  TEMN_DES_DATA_REPO_CONFIGURATION_ILP_ID: {{ .Values.des.configurationIlpId }}
+  IGNITE_OPTIONS: -XX:+HeapDumpOnOutOfMemoryError -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:+DisableExplicitGC -Xms512M -Xmx2048M -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -DIGNITE_MAX_INDEX_PAYLOAD_SIZE=135 -DIGNITE_QUIET=true -DIGNITE_NO_ASCII=true -DIGNITE_CONSOLE_APPENDER=false -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true -Dtemn.des.data.repo.dataevents.tablename.suffix=_DATA_EVENTS -Dtemn.des.data.repo.t24.runtime=TAFJ
+  INSTANCEID: instance-1
+  # keystore overrides
+  TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS: com.my_bank.des.security.MyBankClientSecretProvider
+  TEMN_TAFJ_CACHE_KEYSTORE_OVERRIDE_PASSWORD_CLASS_METHOD: getClientSecret
+  TEMN_TAFJ_JDBC_URL: {{ .Values.des.temenosTafjJdbcUrl }}
+  TEMN_TAFJ_JDBC_USERNAME: {{ .Values.des.temenosTafjJdbcUser }}
+  TEMN_TAFJ_JDBC_DRIVER: {{ .Values.des.temenosTafjJdbcDriver }}
+
+  TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTERRORCACHE: {{ .Values.des.temenosTafjJdbcErrorCacheUrl }}
+  TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTERRORCACHE: {{ .Values.des.temenosTafjJdbcErrorCacheUser }}
+  TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTERRORCACHE: {{ .Values.des.temenosTafjJdbcErrorCacheDriver }}
+
+  TEMN_TAFJ_JDBC_URL_TEMENOSDFEVENTCACHE: {{ .Values.des.temenosTafjJdbcEventCacheUrl }}
+  TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFEVENTCACHE: {{ .Values.des.temenosTafjJdbcEventCacheUser }}
+  TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFEVENTCACHE: {{ .Values.des.temenosTafjJdbcEventCacheDriver }}
+
+  TEMN_TAFJ_JDBC_URL_TEMENOSDFXSDEVENTCACHE: {{ .Values.des.temenosTafjJdbcXsdEventCacheUrl }}
+  TEMN_TAFJ_JDBC_USERNAME_TEMENOSDFXSDEVENTCACHE: {{ .Values.des.temenosTafjJdbcXsdEventCacheUser }}
+  TEMN_TAFJ_JDBC_DRIVER_TEMENOSDFXSDEVENTCACHE: {{ .Values.des.temenosTafjJdbcXsdEventCacheDriver }}
+
+  TEMN_DES_CONFLUENT_SCHEMA_REGISTRY_URL: "http://schema-registry.des:8081"
+
+  # keystore overrides ends
+  EVENT_PROCESSOR_T24_DB_SID: ""
+  EVENT_HUB_RESOURCE_GROUP_HOST: "{{ .Values.des.eventHubResourceGroupHost }}"
+  EVENT_HUB_RESOURCE_GROUP_PORT: "{{ .Values.des.eventHubResourceGroupPort }}"
+  EVENT_HUB_RESOURCE_GROUP_ILP_HOST: "{{ .Values.des.eventHubResourceGroupIlpHost }}"
+  EVENT_HUB_RESOURCE_GROUP_ILP_PORT: "{{ .Values.des.eventHubResourceGroupIlpPort }}"
+  EVENT_HUB_CI_RESOURCE_GROUP_HOST: "{{ .Values.des.eventHubResourceGroupHostForSchema }}"
+  EVENT_HUB_CI_RESOURCE_GROUP_PORT: "{{ .Values.des.eventHubResourceGroupPortForSchema }}"
+
+  DES_API_SECURITY_USER: admin
+  DES_API_SECURITY_PASSWORD: $2a$10$FrciKBV9bd8VFDwJBZbFrOogKbn72Vhe4ZS/ZDsWFB3KBmtwrkA8C

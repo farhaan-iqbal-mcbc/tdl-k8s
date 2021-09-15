@@ -1,0 +1,27 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-inside
+  namespace: {{ .Values.deploymentPrefix }}-mysql
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-outside
+  namespace: {{ $.Values.deploymentPrefix }}-mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+  - protocol: TCP
+    targetPort: 3306
+    port: {{ .Values.network.mysqlOutsidePort }}
+    nodePort: {{ .Values.network.mysqlOutsidePort }}
+  type: NodePort  

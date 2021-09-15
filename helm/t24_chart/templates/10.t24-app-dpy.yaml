@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t24-app
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  selector:
+    matchLabels:
+      app: t24-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: t24-app
+    spec:
+      imagePullSecrets:
+        - name: registrycredentials
+      containers:
+        - name: t24-app
+          image: {{ .Values.imageCredentials.registry }}temenos/data/t24-app-h2
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: t24-app-config
+          env:
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: t24-secrets
+                key: db_password
+          - name: JMS_USER
+            valueFrom:
+              secretKeyRef:
+                name: t24-secrets
+                key: AMQ_USER
+          - name: JMS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: t24-secrets
+                key: AMQ_PASSWORD
+          - name: JAVA_OPTIONS_SIZING
+            value: "-Xms1536m -Xmx1536m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=512m"
+          resources:
+            requests:
+              cpu: 200m
+            limits:
+              cpu: 1000m
+              memory: 2300Mi
+          ports:
+            - containerPort: 8080
+              name: app

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: activemq
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  selector:
+    matchLabels:
+      app: activemq
+  serviceName: activemq
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: activemq
+    spec:
+      containers:
+        - name: activemq
+          image: rmohr/activemq:5.15.9
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 61616
+              name: activemq
+          volumeMounts:
+            - name: amq-volume-claim
+              mountPath: /activemq/data
+          resources:
+            requests:
+              cpu: 200m
+              memory: 250Mi
+            limits:
+              cpu: 1
+              memory: 1G
+  volumeClaimTemplates:
+    - metadata:
+        name: amq-volume-claim
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 2Gi

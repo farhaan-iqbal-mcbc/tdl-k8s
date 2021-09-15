@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: h2
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  selector:
+    matchLabels:
+      app: h2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: h2
+    spec:
+      imagePullSecrets:
+        - name: registrycredentials
+      containers:
+        - name: h2
+          image: {{ .Values.imageCredentials.registry }}temenos/data/h2
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: JAVA_OPTIONS_SIZING
+              value: "-Xmx2560m "
+          command: ['/bin/bash', '-c',
+                    'java -server ${JAVA_OPTIONS_SIZING} -cp "${TAFJ_HOME}/dbscripts/h2/TAFJFunctions.jar:/opt/h2/bin/${H2_VERSION}.jar"
+                    org.h2.tools.Server -web -webAllowOthers -webPort 81
+                    -tcp -tcpPort 3456 -tcpAllowOthers
+                    -baseDir ${H2_HOME}']
+          resources:
+            requests:
+              cpu: 200m
+              memory: 3G
+            limits:
+              cpu: 1000m
+              memory: 3G
+          ports:
+            - containerPort: 3456
+              name: db
+            - containerPort: 81
+              name: eighty-one

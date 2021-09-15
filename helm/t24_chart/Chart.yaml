@@ -1,0 +1,5 @@
+apiVersion: v2
+appVersion: "1.1"
+description: A Temenos Helm chart to add fluent-bit log collection daemons
+name: fluentbit_chart
+version: 0.0.1

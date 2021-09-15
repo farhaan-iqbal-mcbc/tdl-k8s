@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal
+  namespace: {{ .Values.deploymentPrefix }}-portal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portal
+  template:
+    metadata:
+      labels:
+        app: portal
+    spec:
+      {{ if .Values.clusterSizing.useSelectors }}
+      nodeSelector:
+        nodetype: application
+      {{ end }}
+      imagePullSecrets:
+        - name: registrycredentials
+      initContainers:
+      - name: init
+        image: arey/mysql-client
+        env:
+        - name: METADATADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: metadatadb-password
+              key: password
+        volumeMounts:
+        command: ['sh', '-c',
+                  'until mysql -h {{ .Values.network.mysqlHost }} -P{{ .Values.network.mysqlHostPort }}
+                  -u {{ .Values.metadataDb.user }} -p${METADATADB_PASSWORD} --connect-timeout 5
+                  -e "select ''connected'' as status; \q";
+                  do echo waiting for mysql; sleep 5; done;
+                  RESULT=`mysql -h {{ .Values.network.mysqlHost }} -P{{ .Values.network.mysqlHostPort }}
+                  -u {{ .Values.metadataDb.user }} -p${METADATADB_PASSWORD} -e "SHOW DATABASES" | grep htrunk`;
+                  echo $RESULT;
+                  if [ "$RESULT" != "htrunk" ]; then
+                     echo "creating";
+                     echo `date`;
+                     mysql -h {{ .Values.network.mysqlHost }} -P{{ .Values.network.mysqlHostPort }}
+                      -u {{ .Values.metadataDb.user }} -p${METADATADB_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS htrunk";
+                     echo `date`;
+                  fi
+                ']
+      containers:
+      - name: portal
+        image: {{ .Values.imageCredentials.registry }}temenos/data/tde_portal
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        - name: ajp
+          containerPort: 8009
+        - name: shutdown
+          containerPort: 8005
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: SPARK_LOGGING_LEVEL
+          value: "{{ .Values.loggingLevel.spark }}"
+        - name: MYSQL_HOST
+          value: "{{ .Values.network.mysqlHost }}"
+        - name: MYSQL_PORT
+          value: "{{ .Values.network.mysqlHostPort }}"
+        - name: MYSQL_USER
+          value: "{{ .Values.metadataDb.user }}"
+        - name: URL_TEMPLATE
+          value: "jdbc:mysql://%s:%s/htrunk?zeroDateTimeBehavior=CONVERT_TO_NULL"
+        - name: KUBERNETES_REQUEST_TIMEOUT
+          value: "100000"
+        - name: MYSQL_PWD
+          valueFrom:
+            secretKeyRef:
+              name: metadatadb-password
+              key: password
+        - name: TZ
+          value: {{ .Values.misc.containerTimezone }}
+        - name: EXTRA_SAN
+          value: "dns:gvainsight.temenosgroup.com,dns:portal.tde-portal,dns:some.other.dns"
+        command: ['/bin/bash', '-c',
+          'set -x; sed -i "s/log4j.rootCategory=INFO/log4j.rootCategory=$SPARK_LOGGING_LEVEL/" /opt/spark/conf/log4j.properties;
+          sed -i "s/@POD_IP@/$POD_IP/" /opt/spark/conf/spark-defaults.conf;
+          echo "{{ .Values.desSysConfig.fld_tdl_kafka_url }} kafka" >> /etc/hosts;
+          cp Tomcat/conf/server.xml Tomcat/conf/server.original.xml;
+          ./tde-server.sh init ${MYSQL_HOST} ${MYSQL_PORT} ${MYSQL_USER} ${MYSQL_PWD} ${EXTRA_SAN};
+          echo "Making common jars available to spark driver and workers..."
+          mkdir -p /spark-common/jars;
+          mkdir -p /spark-common/lib/spark211/mysql/;
+          mkdir -p /spark-common/lib/spark211/des_dependency/;
+            curl -o /spark-common/lib/spark211/mysql/mysql-connector-java-8.0.22.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.22/mysql-connector-java-8.0.22.jar;
+            curl -o  /spark-common/lib/spark211/des_dependency/sqljdbc4-4.0.jar https://repo.clojars.org/com/microsoft/sqlserver/sqljdbc4/4.0/sqljdbc4-4.0.jar;
+            curl -o  /spark-common/lib/spark211/des_dependency/ojdbc7-12.1.0.2.jar http://nexus.saas.hand-china.com/content/repositories/rdc/com/oracle/ojdbc7/12.1.0.2/ojdbc7-12.1.0.2.jar;            
+            curl -o  /spark-common/lib/spark211/des_dependency/nuodb-jdbc-3.3.0.jar https://repo1.maven.org/maven2/com/nuodb/jdbc/nuodb-jdbc/3.3.0/nuodb-jdbc-3.3.0.jar;            
+            curl -o  /spark-common/lib/spark211/des_dependency/postgresql-42.2.14.jar https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.14/postgresql-42.2.14.jar;
+                    
+          cp -r /spark-common/lib/ /usr/lib/htrunk/;
+          
+          mkdir -p /spark-common/work;
+            cp /usr/lib/htrunk/work/des-tdl-landing-process.jar /spark-common/work;
+            cp /usr/lib/htrunk/work/tdl-job-monitor.jar /spark-common/work;
+            cp /usr/lib/htrunk/work/tde-rule-engine.jar /spark-common/work;
+            cp /usr/lib/htrunk/work/tde_azure.jar /spark-common/work;
+          mkdir -p /spark-common/conf;
+            cp /usr/lib/htrunk/conf/meta-conf.properties /spark-common/conf;
+          mkdir -p /spark-common/spark-logs; chmod 777 /spark-common/spark-logs;
+          mkdir -p {{ .Values.spark.checkpointLocation }}/ods;
+          mkdir -p /spark-common/uploads; ln -s /spark-common/uploads/ /usr/lib/htrunk/uploads;
+            cp /opt/spark/conf/metrics.properties /spark-common/metrics.properties; chmod 755 /spark-common/metrics.properties;          
+          sleep infinity;']
+        resources:
+          requests:
+            cpu: 1
+            memory: 2G
+          limits:
+            cpu: 2
+            memory: 5.5G
+        volumeMounts:
+        - mountPath: "/spark-common"
+          name: spark-common
+        - name: configmap-volume
+          mountPath: /opt/spark/conf/spark-defaults.conf
+          subPath: spark-defaults.conf
+        - name: configmap-volume
+          mountPath: /opt/spark/conf/metrics.properties
+          subPath: metrics.properties                              
+      volumes:
+        - name: spark-common
+          persistentVolumeClaim:
+            claimName: spark-pvc-rwx
+        - name: configmap-volume
+          configMap:
+            name: portal-config

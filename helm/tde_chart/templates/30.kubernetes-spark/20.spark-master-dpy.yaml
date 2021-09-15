@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-master
+  namespace: {{ .Values.deploymentPrefix }}-portal
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: spark-master
+  template:
+    metadata:
+      labels:
+        app: spark-master
+    spec:
+      imagePullSecrets:
+        - name: registrycredentials    
+      volumes:
+        - name: spark-common
+          persistentVolumeClaim:
+            claimName: spark-pvc-rwx            
+      containers:
+      - name : spark-master
+        image: {{ .Values.imageCredentials.registry }}temenos/analytics/spark:2.4.3-0.0.2
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - containerPort: 7077
+          protocol: TCP
+          name: spark
+        - containerPort: 8080
+          protocol: TCP
+          name: webui  
+        env:
+          - name: SPARK_LOCAL_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP   
+          - name: SPARK_LOGGING_LEVEL
+            value: "{{ .Values.loggingLevel.spark }}"                         
+        command:
+         - "/bin/bash"
+         - "-c"
+         - "--"
+        args : ["/start-master.sh; date; sleep infinity;"]
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1.5Gi  
+        volumeMounts:
+        - mountPath: "/usr/lib/htrunk"
+          name: spark-common     

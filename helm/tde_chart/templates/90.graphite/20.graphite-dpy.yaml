@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphite
+  namespace: {{ .Values.deploymentPrefix }}-graphite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: graphite
+  template:
+    metadata:
+      labels:
+        app: graphite
+    spec: 
+      imagePullSecrets:
+        - name: registrycredentials          
+      containers:
+      - name: graphite
+        image: {{ .Values.imageCredentials.registry }}temenos/data/graphite
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 2003
+          name: carbon-plain     
+        - containerPort: 2004
+          name: carbon-pkl   
+        - containerPort: 2023
+          name: carbon-ag-plain
+        - containerPort: 2024
+          name: carbon-ag-pkl   
+        - containerPort: 8125
+          name: statsd   
+        - containerPort: 8126
+          name: statsd-admin  
+      volumes:
+      {{ if ne .Values.storage.provider "none" }} 
+      - name: graphite-persistent-storage
+        persistentVolumeClaim:
+          claimName: graphite-pv-claim
+      {{ end }}

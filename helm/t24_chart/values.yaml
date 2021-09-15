@@ -1,0 +1,29 @@
+
+imageCredentials:
+  registry:
+  username:
+  password:
+imagePullPolicy: IfNotPresent
+
+# all namespaces & storage classes will be prefixed with this token
+deploymentPrefix: tde
+
+
+network:
+  t24appOutsidePort: 30222
+  t24webOutsidePort: 30223
+  h2OutsidePort: 30224
+
+t24db:
+#  url: jdbc:sqlserver://wct24dbserver.database.windows.net:1433;databaseName=T24202003
+#  user: WCT24
+#  password: Temenos!123
+  url: jdbc:h2:tcp://h2.tde-t24:3456/TAFJDB;DB_CLOSE_ON_EXIT=FALSE;MODE=Oracle;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0;FILE_LOCK=NO;IFEXISTS=TRUE;CACHE_SIZE=8192;MVCC=TRUE;LOCK_TIMEOUT=60000
+  user: t24
+  password: t24
+
+amq:
+  broker: tcp://amq.tde-t24:61616
+  password: admin
+  user: admin
+

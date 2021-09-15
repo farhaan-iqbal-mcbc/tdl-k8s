@@ -1,0 +1,1088 @@
+{
+    "enumDefs": [],
+    "structDefs": [],
+    "classificationDefs": [],
+    "entityDefs": [
+      {
+        "name": "sds_instance",
+        "description": "Instance that the rdbms server is running on",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "rdbms_type",
+            "typeName": "string",
+            "isOptional": false,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": true
+          },
+          {
+            "name": "platform",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": true
+          },
+          {
+            "name": "cloudOrOnPrem",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "hostname",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "port",
+            "typeName": "int",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "protocol",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "contact_info",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "comment",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "databases",
+            "typeName": "array<sds_db>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "sds_db",
+        "description": "a database (schema) in an rdbms",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "prodOrOther",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": true
+          },
+          {
+            "name": "contact_info",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "instance",
+            "typeName": "sds_instance",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "databases"
+                }
+              }
+            ]
+          },
+          {
+            "name": "tables",
+            "typeName": "array<sds_table>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "sds_table",
+        "description": "a table in an rdbms database (schema)",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "options": {
+          "schemaElementsAttribute": "[\"columns\"]"
+        },
+        "attributeDefs": [
+          {
+            "name": "db",
+            "typeName": "sds_db",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "tables"
+                }
+              }
+            ],
+            "defaultValue": null,
+            "description": null
+          },
+          {
+            "name": "name_path",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "createTime",
+            "typeName": "date",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "comment",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "type",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "contact_info",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "product_code",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "product_version",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "product_name",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "table_type",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "schema_id",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "application_name",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "src_application_name",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "is_table_included",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "parent_table_name",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "valuesMinCount": 1,
+            "valuesMaxCount": 1,
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "columns",
+            "typeName": "array<sds_column>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "reference_table",
+            "typeName": "array<sds_table>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "indexes",
+            "typeName": "array<sds_index>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          },
+          {
+            "name": "foreign_keys",
+            "typeName": "array<sds_foreign_key>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "valuesMinCount": 0,
+            "valuesMaxCount": 2147483647,
+            "isUnique": false,
+            "isIndexable": false,
+            "includeInNotification": false,
+            "constraints": [
+              {
+                "type": "ownedRef"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "sds_column",
+        "description": "a column in an rdbms table",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "options": {
+          "schemaAttributes": "[\"name\", \"description\", \"owner\", \"data_type\", \"comment\", \" isPrimaryKey\", \" isNullable\"]"
+        },
+        "attributeDefs": [
+          {
+            "name": "fieldtag",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "field_pii_purpose",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "field_pii_accessibility",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "field_pii_attributes",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldnumber",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fielddatatype",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldfmt",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldlen",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldinputlen",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldgroupnumber",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldmvgroupnumber",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldshortname",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldname",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldcolumnname",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "is_column_included",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "local_reference_field_number",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "dfrep_owned_indicator",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldgroupname",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldmvgroupname",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldjustification",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldtype",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "fieldlangtype",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "table",
+            "typeName": "sds_table",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "columns"
+                }
+              }
+            ],
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          },
+          {
+            "name": "default_value",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "comment",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "isNullable",
+            "typeName": "boolean",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "isPrimaryKey",
+            "typeName": "boolean",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          }
+        ]
+      },
+      {
+        "name": "sds_index",
+        "description": "An index on an RDBMS table",
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "index_type",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "isUnique",
+            "typeName": "boolean",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "comment",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false
+          },
+          {
+            "name": "columns",
+            "typeName": "array<sds_column>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          },
+          {
+            "name": "table",
+            "typeName": "sds_table",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "constraints": [
+              {
+                "type": "inverseRef",
+                "params": {
+                  "attribute": "indexes"
+                }
+              }
+            ],
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          }
+        ]
+      },
+      {
+        "name": "sds_foreign_key",
+        "description": null,
+        "superTypes": [
+          "DataSet"
+        ],
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "table",
+            "typeName": "sds_table",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          },
+          {
+            "name": "key_columns",
+            "typeName": "array<sds_column>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          },
+          {
+            "name": "references_table",
+            "typeName": "sds_table",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          },
+          {
+            "name": "references_columns",
+            "typeName": "array<sds_column>",
+            "isOptional": true,
+            "cardinality": "SET",
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          }
+        ]
+      },
+      {
+        "name": "sds_process",
+        "description": "rdbms process",
+        "superTypes": [
+          "Process"
+        ],
+        "typeVersion": "1.0",
+        "attributeDefs": [
+          {
+            "name": "startTime",
+            "typeName": "date",
+            "cardinality": "SINGLE",
+            "isIndexable": false,
+            "isOptional": false,
+            "isUnique": false
+          },
+          {
+            "name": "endTime",
+            "typeName": "date",
+            "cardinality": "SINGLE",
+            "isIndexable": false,
+            "isOptional": false,
+            "isUnique": false
+          },
+          {
+            "name": "operationType",
+            "typeName": "string",
+            "cardinality": "SINGLE",
+            "isIndexable": true,
+            "isOptional": false,
+            "isUnique": false
+          },
+          {
+            "name": "queryText",
+            "typeName": "string",
+            "cardinality": "SINGLE",
+            "isIndexable": false,
+            "isOptional": false,
+            "isUnique": false
+          },
+          {
+            "name": "recentQueries",
+            "typeName": "array<string>",
+            "cardinality": "LIST",
+            "isIndexable": false,
+            "isOptional": true,
+            "isUnique": false
+          },
+          {
+            "name": "columnLineages",
+            "typeName": "sds_column_lineage",
+            "cardinality": "SINGLE",
+            "isIndexable": false,
+            "isOptional": true,
+            "isUnique": false
+          },
+          {
+            "name": "processInput",
+            "typeName": "Process",
+            "cardinality": "SINGLE",
+            "isIndexable": false,
+            "isOptional": true,
+            "isUnique": false
+          },
+          {
+            "name": "processoutout",
+            "typeName": "Process",
+            "cardinality": "SINGLE",
+            "isIndexable": false,
+            "isOptional": true,
+            "isUnique": false
+          }
+        ]
+      },
+      {
+        "name": "sds_column_lineage",
+        "typeDescription": "sds_column_lineage",
+        "typeVersion": "1.0",
+        "superTypes": [
+          "Process"
+        ],
+        "serviceType": "rdbms",
+        "attributeDefs": [
+          {
+            "name": "query",
+            "typeName": "Process",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          },
+          {
+            "name": "depenendencyType",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          },
+          {
+            "name": "expression",
+            "typeName": "string",
+            "isOptional": true,
+            "cardinality": "SINGLE",
+            "isUnique": false,
+            "isIndexable": false,
+            "defaultValue": null,
+            "description": null,
+            "options": null
+          }
+        ]
+      }
+    ],
+    "relationshipDefs": [
+      {
+        "name": "sds_instance_databases",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__sds_instance.databases",
+        "endDef1": {
+          "type": "sds_instance",
+          "name": "databases",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_db",
+          "name": "instance",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_db_tables",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__sds_db.tables",
+        "endDef1": {
+          "type": "sds_db",
+          "name": "tables",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_table",
+          "name": "db",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_table_columns",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__sds_table.columns",
+        "endDef1": {
+          "type": "sds_table",
+          "name": "columns",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_column",
+          "name": "table",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_table_indexes",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__sds_table.indexes",
+        "endDef1": {
+          "type": "sds_table",
+          "name": "indexes",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_index",
+          "name": "table",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_index_columns",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__sds_index.columns",
+        "endDef1": {
+          "type": "sds_index",
+          "name": "columns",
+          "isContainer": false,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_column",
+          "name": "indexes",
+          "isContainer": false,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_table_foreign_key",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__sds_table.foreign_keys",
+        "endDef1": {
+          "type": "sds_table",
+          "name": "foreign_keys",
+          "isContainer": true,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_foreign_key",
+          "name": "table",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_foreign_key_key_columns",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__sds_foreign_key.key_columns",
+        "endDef1": {
+          "type": "sds_foreign_key",
+          "name": "key_columns",
+          "isContainer": false,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_column",
+          "name": "key_column_references",
+          "isContainer": false,
+          "cardinality": "SET"
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_foreign_key_table_references",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__sds_foreign_key.references_table",
+        "endDef1": {
+          "type": "sds_foreign_key",
+          "name": "references_table",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_table",
+          "name": "foreign_key_references",
+          "isContainer": false,
+          "cardinality": "SET"
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_foreign_key_column_references",
+        "serviceType": "rdbms",
+        "typeVersion": "1.0",
+        "relationshipCategory": "ASSOCIATION",
+        "relationshipLabel": "__sds_foreign_key.references_columns",
+        "endDef1": {
+          "type": "sds_foreign_key",
+          "name": "references_columns",
+          "isContainer": false,
+          "cardinality": "SET",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_column",
+          "name": "foreign_key_references",
+          "isContainer": false,
+          "cardinality": "SET"
+        },
+        "propagateTags": "NONE"
+      },
+      {
+        "name": "sds_process_column_lineage",
+        "serviceType": "rdbms",
+        "typeVersion": "1.2",
+        "relationshipCategory": "COMPOSITION",
+        "relationshipLabel": "__sds_column_lineage.query",
+        "endDef1": {
+          "type": "sds_column_lineage",
+          "name": "query",
+          "isContainer": false,
+          "cardinality": "SINGLE",
+          "isLegacyAttribute": true
+        },
+        "endDef2": {
+          "type": "sds_process",
+          "name": "columnLineages",
+          "isContainer": true,
+          "cardinality": "SET"
+        },
+        "propagateTags": "NONE"
+      }
+    ]
+  }

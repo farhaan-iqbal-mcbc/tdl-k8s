@@ -1,0 +1,35 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: spark-ui-proxy-controller
+  namespace: {{ .Values.deploymentPrefix }}-portal
+spec:
+  replicas: 0
+  selector:
+    component: spark-ui-proxy
+  template:
+    metadata:
+      labels:
+        component: spark-ui-proxy
+    spec:
+      # nodeSelector:
+      #   dedicated: monitor
+      # tolerations:
+      # - key: node-role.kubernetes.io/master
+      #   effect: NoSchedule       
+      containers:
+        - name: spark-ui-proxy
+          image: elsonrodriguez/spark-ui-proxy:1.0
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+          args:
+            - spark-master.{{ .Values.deploymentPrefix }}-portal:8080
+          # livenessProbe:
+          #     httpGet:
+          #       path: /
+          #       port: 80
+          #     initialDelaySeconds: 120
+          #     timeoutSeconds: 5

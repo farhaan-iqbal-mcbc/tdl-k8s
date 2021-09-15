@@ -1,0 +1,33 @@
+kind: ConfigMap
+metadata:
+  name: install-config
+  namespace: des
+apiVersion: v1
+data:
+  config.properties: |-
+    {{ tpl (.Files.Get "config-files/config.properties") . | nindent 4 | trim }}
+  config.ilp.properties: |-
+    {{ tpl (.Files.Get "config-files/config.ilp.properties") . | nindent 4 | trim }}
+  install.sql: |-
+    {{ tpl (.Files.Get "config-files/install.sql") . | nindent 4 | trim }}
+  install-functions.sql: |-
+    {{ tpl (.Files.Get "config-files/install-functions.sql") . | nindent 4 | trim }}
+  install-triggers.sql: |-
+    {{ tpl (.Files.Get "config-files/install-triggers.sql") . | nindent 4 | trim }}
+  install-stream.sql: |-
+    {{ tpl (.Files.Get "config-files/install-stream.sql") . | nindent 4 | trim }}
+  install.sh: |-
+    {{ tpl (.Files.Get "config-files/install.sh") . | nindent 4 | trim }}
+  update.sh: |-
+    {{ tpl (.Files.Get "config-files/update.sh") . | nindent 4 | trim }}
+
+  install-h2.sh: |-
+    {{ tpl (.Files.Get "config-files/install-h2.sh") . | nindent 4 | trim }}
+  install-h2.sql: |-
+    {{ tpl (.Files.Get "config-files/install-h2.sql") . | nindent 4 | trim }}
+  install-h2-streamdb.sql: |-
+    {{ tpl (.Files.Get "config-files/install-h2-streamdb.sql") . | nindent 4 | trim }}
+  install-h2-multi-company.sql: |-
+    {{ tpl (.Files.Get "config-files/install-h2-multi-company.sql") . | nindent 4 | trim }}
+  install-h2-t24base.sql: |-
+    {{ tpl (.Files.Get "config-files/install-h2-t24base.sql") . | nindent 4 | trim }}

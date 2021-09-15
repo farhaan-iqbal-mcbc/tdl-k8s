@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: {{ .Values.deploymentPrefix }}-mysql
+spec:
+  replicas: {{ .Values.clusterSizing.mysqlMetadata }}
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec: 
+      imagePullSecrets:
+        - name: registrycredentials          
+      {{ if ne .Values.storage.provider "none" }}           
+      initContainers:
+      - name: remove-lost-found
+        image: busybox:1.31.1
+        command: ['sh', '-c', 'rm -rf /var/lib/mysql/lost+found && echo "lost+found removed"']
+        volumeMounts: 
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      {{ end }}  
+      containers:
+      - name: mysql
+        image: {{ .Values.imageCredentials.registry }}temenos/data/mysql-8.0
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+        - name: MYSQL_ROOT_HOST
+          value: "%"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "{{ .Values.metadataDb.password }}"
+        - name: TZ
+          value: {{ .Values.misc.containerTimezone }}
+        volumeMounts:
+        {{ if ne .Values.storage.provider "none" }} 
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql   
+        {{ end }}      
+      volumes:
+      - name: config-volume
+        configMap:
+          name: mysql-config      
+      {{ if ne .Values.storage.provider "none" }} 
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+      {{ end }}

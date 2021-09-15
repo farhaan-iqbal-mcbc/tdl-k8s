@@ -1,0 +1,13 @@
+
+
+storage:
+  provider: localhost-linux
+  defaultSharedStorageClass: local
+  defaultStorageClass: local
+  linuxOnPrem:
+
+  azure:
+    storageLocation: ""
+  rook:
+    replicas: 0
+

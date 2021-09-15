@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlas-pv-claim
+  namespace: {{ .Values.deploymentPrefix }}-atlas
+  labels:
+    app: atlas
+spec:
+  storageClassName: {{ .Values.storage.defaultStorageClass }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlas-pv-solr-claim
+  namespace: {{ .Values.deploymentPrefix }}-atlas
+  labels:
+    app: atlas
+spec:
+  storageClassName: {{ .Values.storage.defaultStorageClass }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi      
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlas-pv-zk-claim
+  namespace: {{ .Values.deploymentPrefix }}-atlas
+  labels:
+    app: atlas
+spec:
+  storageClassName: {{ .Values.storage.defaultStorageClass }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi            

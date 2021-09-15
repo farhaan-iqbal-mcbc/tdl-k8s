@@ -1,0 +1,21 @@
+kind: ConfigMap
+metadata:
+  name: atlas-config
+  namespace: {{ .Values.deploymentPrefix }}-atlas
+apiVersion: v1
+data:
+  atlas-application.properties: |-
+    {{ tpl (.Files.Get "config-files/atlas/atlas-application.properties") . | nindent 4 | trim }}
+  atlas_config.py: |-
+    {{ tpl (.Files.Get "config-files/atlas/atlas_config.py") . | nindent 4 | trim }}    
+  cassandra.yml: |-
+    {{ tpl (.Files.Get "config-files/atlas/cassandra.yml") . | nindent 4 | trim }}   
+  zoo.cfg.template: |-
+    {{ tpl (.Files.Get "config-files/atlas/zoo.cfg.template") . | nindent 4 | trim }}   
+  zoo.cfg: |-
+    {{ tpl (.Files.Get "config-files/atlas/solr/zoo.cfg") . | nindent 4 | trim }}   
+  solr.xml: |-
+    {{ tpl (.Files.Get "config-files/atlas/solr/solr.xml") . | nindent 4 | trim }}   
+  README.txt: |-
+    {{ tpl (.Files.Get "config-files/atlas/solr/README.txt") . | nindent 4 | trim }}   
+  

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: {{ .Values.deploymentPrefix }}-grafana
+spec:
+  replicas: {{ .Values.clusterSizing.grafanaMetadata }}
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec: 
+      imagePullSecrets:
+        - name: registrycredentials          
+      initContainers:
+      - name: init-chown-data
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command: ["chown", "-R", "472:472", "/data"]
+        volumeMounts:
+        - mountPath: /data
+          name: grafana-persistent-storage     
+      containers:
+      - name: grafana
+        image: {{ .Values.imageCredentials.registry }}temenos/data/grafana
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - containerPort: 3000
+          name: grafana
+          name: http
+        volumeMounts:
+          - name: grafana-persistent-storage
+            mountPath: /var/lib/grafana          
+      volumes:
+      {{ if ne .Values.storage.provider "none" }} 
+      - name: grafana-persistent-storage
+        persistentVolumeClaim:
+          claimName: grafana-pv-claim
+      {{ end }}

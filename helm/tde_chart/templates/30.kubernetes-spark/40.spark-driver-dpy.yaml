@@ -1,0 +1,32 @@
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   labels:
+#     name: spark-driver
+#   name: spark-driver
+#   namespace: {{ .Values.deploymentPrefix }}-portal
+# spec:
+#   imagePullSecrets:
+#     - name: registrycredentials    
+#   containers:
+#   - image: {{ .Values.imageCredentials.registry }}/temenos/analytics/spark:2.4.3-0.0.2
+#     imagePullPolicy : "Always"
+#     name: spark-driver
+#     ports:
+#     - containerPort: 7078
+#       protocol: TCP
+#     - containerPort: 4040
+#       name: webui          
+#       protocol: TCP          
+#     env:
+#     - name: POD_IP
+#       valueFrom:
+#         fieldRef:
+#           fieldPath: status.podIP
+#     - name: SPARK_LOGGING_LEVEL
+#       value: "{{ .Values.loggingLevel.spark }}"              
+#     command: ['/bin/bash']
+#     resources:
+#       limits:
+#         cpu: "1"
+#         memory: 1.5Gi    

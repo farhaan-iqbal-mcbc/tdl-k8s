@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: portal-outside
+  namespace: {{ $.Values.deploymentPrefix }}-portal
+  {{ if eq .Values.network.portal.portalOutsideServiceType "LoadBalancer" }}
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  {{ end }}
+spec:
+  selector:
+    app: portal
+  ports:
+  - name: https-outside
+    protocol: TCP
+    port: {{ .Values.network.portal.portalOutsidePort }}
+    {{ if eq .Values.network.portal.portalOutsideServiceType "NodePort" }}
+    nodePort: {{ .Values.network.portal.portalOutsidePort }}
+    {{ end }}
+    targetPort: 443
+  type: {{ .Values.network.portal.portalOutsideServiceType }}
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: portal
+  namespace: {{ .Values.deploymentPrefix }}-portal
+spec:
+  selector:
+    app: portal
+  ports:
+  - name: https-inside
+    protocol: TCP
+    port: 443
+  - name: tdl-job-monitor
+    protocol: TCP
+    port: 9443  
+
+
+---  

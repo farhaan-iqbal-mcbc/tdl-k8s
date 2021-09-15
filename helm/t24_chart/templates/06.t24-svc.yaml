@@ -1,0 +1,113 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: app
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  selector:
+    app: t24-app
+  ports:
+    - name: t24app
+      port: 8080
+      targetPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-external
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  selector:
+    app: t24-app
+  ports:
+    - name: t24app
+      protocol: TCP
+      targetPort: 8080
+      port: {{ .Values.network.t24appOutsidePort }}
+      nodePort: {{ .Values.network.t24appOutsidePort }}
+  type: NodePort
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: browserweb
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: t24-browserweb
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: browserweb-external
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  selector:
+    app: t24-browserweb
+  ports:
+    - name: t24web
+      protocol: TCP
+      targetPort: 8080
+      port: {{ .Values.network.t24webOutsidePort }}
+      nodePort: {{ .Values.network.t24webOutsidePort }}
+  type: NodePort
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: amq
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  ports:
+    - port: 61616
+      protocol: TCP
+      targetPort: 61616
+  selector:
+    app: activemq
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: h2
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  ports:
+    - port: 3456
+      protocol: TCP
+      targetPort: 3456
+  selector:
+    app: h2
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: h2-external
+  namespace: {{ .Values.deploymentPrefix }}-t24
+spec:
+  selector:
+    app: h2
+  ports:
+    - name: h2ext
+      protocol: TCP
+      targetPort: 3456
+      port: {{ .Values.network.h2OutsidePort }}
+      nodePort: {{ .Values.network.h2OutsidePort }}
+  type: NodePort

@@ -1,0 +1,49 @@
+
+imageCredentials:
+  registry:
+  username:
+  password:
+imagePullPolicy: IfNotPresent
+
+images:
+  t24appImage: t24-app-h2:latest
+  t24bwImage: t24-browserweb:latest
+
+# all namespaces & storage classes will be prefixed with this token
+deploymentPrefix: tde
+
+network:
+  t24appOutsidePort: 30222
+  t24webOutsidePort: 30223
+  h2OutsidePort: 30224
+
+t24db:
+  #  url: jdbc:sqlserver://wct24dbserver.database.windows.net:1433;databaseName=T24202003
+  #  user: WCT24
+  #  password: Temenos!123
+  url: jdbc:h2:tcp://h2.tde-t24:3456/TAFJDB;DB_CLOSE_ON_EXIT=FALSE;MODE=Oracle;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0;FILE_LOCK=NO;IFEXISTS=TRUE;CACHE_SIZE=8192;MVCC=TRUE;LOCK_TIMEOUT=60000
+  user: t24
+  password: t24
+
+amq:
+  broker: tcp://amq.tde-t24:61616
+  password: admin
+  user: admin
+
+sizing:
+  h2JavaOptions: "-XX:MaxRAMPercentage=85.00"
+  h2ContainerRamReq: 3G
+  h2ContainerRamLim: 3G
+  tafjJavaOptions: "-Xms1536m -Xmx1536m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=512m"
+  tafjContainerRamReq: 0Mi
+  tafjContainerRamLim: 2300Mi
+  webJavaOptions: "-Xms2G -Xmx2G -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=512m"
+  webContainerRamReq: 3G
+  webContainerRamLim: 3G
+  amqContainerRamReq: 250Mi
+  amqContainerRamLim: 1G
+
+storage:
+  # storage class used by default, eg.: local (basic linux on prem), hostpath (k8s on docker-desktop) or any provided
+  # by your cluster
+  defaultStorageClass: hostpath

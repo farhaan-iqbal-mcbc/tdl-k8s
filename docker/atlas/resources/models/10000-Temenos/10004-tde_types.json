@@ -1,0 +1,527 @@
+{
+  "enumDefs": [],
+  "structDefs": [],
+  "classificationDefs": [],
+  "entityDefs": [
+    {
+      "name": "tde_project",
+      "description": "Type for tde project",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": [
+        {
+          "name": "Instance",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "Is Shared",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "Project_Id",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "Job_Id",
+          "typeName": "array<tde_job>",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        },
+        {
+          "name": "subflow_job_Id",
+          "typeName": "array<tde_subflowjob>",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tde_job",
+      "description": "Type for tde job",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": [
+        {
+          "name": "Job_Id",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "Job_Type",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "Tde_project",
+          "typeName": "tde_project",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "Job_Id"
+              }
+            }
+          ]
+        },
+        {
+          "name": "tde_in_memory_schema",
+          "typeName": "array<DataSet>",
+          "isOptional": true,
+          "cardinality": "SET",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        },
+        {
+          "name": "Tde_process",
+          "typeName": "array<Process>",
+          "isOptional": true,
+          "cardinality": "SET",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        },
+        {
+          "name": "tde_subflowjob",
+          "typeName": "array<tde_subflowjob>",
+          "isOptional": true,
+          "cardinality": "SET",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tde_subflowjob",
+      "description": "Type for tde job",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": [
+        {
+          "name": "tde_parent_job",
+          "typeName": "array<tde_job>",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "tde_subflowjob"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tde_project",
+          "typeName": "tde_project",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "subflow_job_Id"
+              }
+            }
+          ]
+        },
+        {
+          "name": "tde_in_memory_schema",
+          "typeName": "array<DataSet>",
+          "isOptional": true,
+          "cardinality": "SET",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        },
+        {
+          "name": "Tde_process",
+          "typeName": "array<Process>",
+          "isOptional": true,
+          "cardinality": "SET",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tde_in_memory_schema",
+      "description": "tde_in_memory_schema",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": [
+        {
+          "name": "tde_in_memory_schema_columns",
+          "typeName": "array<tde_in_memory_schema_column>",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "transfom_in_memory_schema_name"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Input Process",
+          "typeName": "array<Process>",
+          "isOptional": true,
+          "cardinality": "SET",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ],
+          "valuesMinCount": 0,
+          "valuesMaxCount": 2147483647,
+          "includeInNotification": false
+        },
+        {
+          "name": "Output Process",
+          "typeName": "array<Process>",
+          "isOptional": true,
+          "cardinality": "SET",
+          "valuesMinCount": 0,
+          "valuesMaxCount": 2147483647,
+          "isUnique": false,
+          "isIndexable": false,
+          "includeInNotification": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        },
+        {
+          "name": "tde_job",
+          "typeName": "tde_job",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "tde_in_memory_schema"
+              }
+            }
+          ]
+        },
+        {
+          "name": "tde_subflowjob",
+          "typeName": "tde_subflowjob",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "tde_in_memory_schema"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tde_in_memory_schema_column",
+      "description": "tde_in_memory_schema_column",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": [
+        {
+          "name": "transfom_in_memory_schema_name",
+          "typeName": "tde_in_memory_schema",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ],
+          "valuesMinCount": 0,
+          "valuesMaxCount": 2147483647,
+          "includeInNotification": false
+        }
+      ]
+    },
+    {
+      "name": "tde_insert_subflow",
+      "description": "Tde insert Subflow",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": []
+    },
+    {
+      "name": "tde_process",
+      "description": "Transform schema connector",
+      "superTypes": [
+        "Process"
+      ],
+      "typeVersion": "1.0",
+      "attributeDefs": [
+        {
+          "name": "Query Text",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "Tde Component Name",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "Tde Component Id",
+          "typeName": "string",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": true
+        },
+        {
+          "name": "tde_in_memory_schema",
+          "typeName": "array<DataSet>",
+          "isOptional": true,
+          "cardinality": "SET",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "ownedRef"
+            }
+          ]
+        },
+        {
+          "name": "tde_job",
+          "typeName": "tde_job",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "Tde_process"
+              }
+            }
+          ]
+        },
+        {
+          "name": "tde_subflowjob",
+          "typeName": "tde_subflowjob",
+          "isOptional": true,
+          "cardinality": "SINGLE",
+          "isUnique": false,
+          "isIndexable": false,
+          "constraints": [
+            {
+              "type": "inverseRef",
+              "params": {
+                "attribute": "Tde_process"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "relationshipDefs": [
+    {
+      "name": "tde_project_job_jobid",
+      "typeVersion": "1.0",
+      "relationshipCategory": "COMPOSITION",
+      "relationshipLabel": "__tde_project.jobs",
+      "endDef1": {
+        "type": "tde_project",
+        "name": "Job_Id",
+        "isContainer": true,
+        "cardinality": "SET",
+        "isLegacyAttribute": true
+      },
+      "endDef2": {
+        "type": "tde_job",
+        "name": "Tde_project",
+        "isContainer": false,
+        "cardinality": "SINGLE",
+        "isLegacyAttribute": true
+      },
+      "propagateTags": "NONE"
+    },
+    {
+      "name": "tde_project_subflow_subflowid",
+      "typeVersion": "1.0",
+      "relationshipCategory": "COMPOSITION",
+      "relationshipLabel": "__tde_project.subflowjobs",
+      "endDef1": {
+        "type": "tde_project",
+        "name": "subflow_job_Id",
+        "isContainer": true,
+        "cardinality": "SET",
+        "isLegacyAttribute": true
+      },
+      "endDef2": {
+        "type": "tde_subflowjob",
+        "name": "Tde_project",
+        "isContainer": false,
+        "cardinality": "SINGLE",
+        "isLegacyAttribute": true
+      },
+      "propagateTags": "NONE"
+    },
+    {
+      "name": "tde_job_process",
+      "typeVersion": "1.0",
+      "relationshipCategory": "COMPOSITION",
+      "relationshipLabel": "__tde_jobs.process",
+      "endDef1": {
+        "type": "tde_job",
+        "name": "Tde_process",
+        "isContainer": true,
+        "cardinality": "SET",
+        "isLegacyAttribute": true
+      },
+      "endDef2": {
+        "type": "tde_process",
+        "name": "tde_job",
+        "isContainer": false,
+        "cardinality": "SINGLE",
+        "isLegacyAttribute": true
+      },
+      "propagateTags": "NONE"
+    },
+    {
+      "name": "tde_subflowjob_process",
+      "typeVersion": "1.0",
+      "relationshipCategory": "COMPOSITION",
+      "relationshipLabel": "__tde_subflowjobs.process",
+      "endDef1": {
+        "type": "tde_subflowjob",
+        "name": "Tde_process",
+        "isContainer": true,
+        "cardinality": "SET",
+        "isLegacyAttribute": true
+      },
+      "endDef2": {
+        "type": "tde_process",
+        "name": "tde_subflowjob",
+        "isContainer": false,
+        "cardinality": "SINGLE",
+        "isLegacyAttribute": true
+      },
+      "propagateTags": "NONE"
+    },
+    {
+      "name": "tde_transform_connnector_input_transform_column",
+      "typeVersion": "1.0",
+      "relationshipCategory": "COMPOSITION",
+      "relationshipLabel": "__tde_transform_connnector_input.transform_column",
+      "endDef1": {
+        "type": "tde_in_memory_schema",
+        "name": "tde_in_memory_schema_columns",
+        "isContainer": true,
+        "cardinality": "SET",
+        "isLegacyAttribute": true
+      },
+      "endDef2": {
+        "type": "tde_in_memory_schema_column",
+        "name": "transfom_in_memory_schema_name",
+        "isContainer": false,
+        "cardinality": "SINGLE",
+        "isLegacyAttribute": true
+      },
+      "propagateTags": "NONE"
+    }
+  ]
+}

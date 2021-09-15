@@ -1,0 +1,6 @@
+{{ if eq .Values.clusterSizing.deployIgnite true }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ignite
+{{ end }}
